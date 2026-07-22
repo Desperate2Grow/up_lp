@@ -59,24 +59,28 @@ const proofItems = [
   "Comunicação que você entende",
 ];
 
-type QuoteServiceKey = "positioning" | "content" | "meta" | "google" | "management";
+type QuoteServiceKey = "positioning" | "content" | "meta" | "google" | "cinematic";
 
 const quoteServices: Array<{
   key: QuoteServiceKey;
   label: string;
   description: string;
   price: number;
+  unitLabel: string;
+  details: string;
+  benefits: string[];
 }> = [
-  { key: "positioning", label: "Posicionamento", description: "Mensagem e direção estratégica", price: 690 },
-  { key: "content", label: "Conteúdo", description: "Roteiro, criação e edição", price: 0 },
-  { key: "meta", label: "Meta Ads", description: "Campanhas para gerar demanda", price: 720 },
-  { key: "google", label: "Google Ads", description: "Busca e intenção de compra", price: 720 },
-  { key: "management", label: "Gestão contínua", description: "Acompanhamento e otimização", price: 490 },
+  { key: "positioning", label: "Posicionamento", description: "Mensagem e direção estratégica", price: 690, unitLabel: "/mês", details: "Organiza o que sua marca promete, para quem fala e por que deve ser escolhida.", benefits: ["Mensagem que diferencia", "Direção para o conteúdo", "Base para campanhas mais coerentes"] },
+  { key: "content", label: "Conteúdo", description: "Roteiro, criação e edição", price: 0, unitLabel: "/mês", details: "Transforma a estratégia em ideias, roteiros e peças que criam presença e confiança toda semana.", benefits: ["Mais consistência nas redes", "Criativos que explicam sem cansar", "Biblioteca de conteúdo para testar"] },
+  { key: "meta", label: "Meta Ads", description: "Campanhas para gerar demanda", price: 720, unitLabel: "/mês", details: "Leva sua mensagem para Instagram e Facebook com segmentação, criativos e testes pensados para gerar conversa.", benefits: ["Distribuição para novos públicos", "Testes de criativos e ofertas", "Otimização para conversas"] },
+  { key: "google", label: "Google Ads", description: "Busca e intenção de compra", price: 720, unitLabel: "/mês", details: "Coloca sua marca diante de quem já está procurando uma solução, serviço ou produto como o seu.", benefits: ["Presença em buscas relevantes", "Palavras-chave com intenção", "Acompanhamento de cliques e oportunidades"] },
+  { key: "cinematic", label: "Captação cinematográfica para Ads", description: "Produção visual para criativos", price: 400, unitLabel: " por captação", details: "Uma captação com direção, luz e composição para transformar sua oferta em anúncios mais desejáveis e memoráveis.", benefits: ["Material com aparência profissional", "Variações para anúncios e redes", "Mais impacto no primeiro segundo"] },
 ];
 
 function QuoteCalculator() {
   const [videosPerWeek, setVideosPerWeek] = useState(4);
   const [selectedServices, setSelectedServices] = useState<QuoteServiceKey[]>(["positioning", "content"]);
+  const [expandedService, setExpandedService] = useState<QuoteServiceKey | null>(null);
   const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
   const contentPrice = 650 + videosPerWeek * 180;
   const total = selectedServices.reduce((sum, key) => {
@@ -85,7 +89,7 @@ function QuoteCalculator() {
   }, 0);
   const planName = total < 2200 ? "Presença" : total < 3400 ? "Tração" : "Aceleração";
   const selectedLabels = selectedServices.map((key) => quoteServices.find((service) => service.key === key)?.label).filter(Boolean).join(", ");
-  const whatsappQuote = `https://wa.me/?text=${encodeURIComponent(`Olá, Up Clips! Fiz uma simulação de plano. Serviços: ${selectedLabels}. Conteúdo: ${videosPerWeek} vídeos por semana. Estimativa: ${money.format(total)}/mês. Quero entender os próximos passos.`)}`;
+  const whatsappQuote = `https://wa.me/?text=${encodeURIComponent(`Olá, Up Clips! Fiz uma simulação de plano. Serviços: ${selectedLabels}. Conteúdo: ${videosPerWeek} vídeos por semana. Estimativa do mix: ${money.format(total)}. Quero entender os próximos passos.`)}`;
 
   const toggleService = (key: QuoteServiceKey) => {
     setSelectedServices((current) => current.includes(key) ? current.filter((item) => item !== key) : [...current, key]);
@@ -116,22 +120,37 @@ function QuoteCalculator() {
             <div className="quote-service-list">
               {quoteServices.map((service) => {
                 const active = selectedServices.includes(service.key);
+                const expanded = expandedService === service.key;
+                const servicePrice = service.key === "content" ? contentPrice : service.price;
                 return (
-                  <button className={`quote-service ${active ? "is-selected" : ""}`} key={service.key} type="button" aria-pressed={active} onClick={() => toggleService(service.key)}>
-                    <span className="quote-check">{active ? <Check size={14} /> : null}</span>
-                    <span><strong>{service.label}</strong><small>{service.description}</small></span>
-                    <ArrowUpRight size={16} />
-                  </button>
+                  <div className={`quote-service-item ${active ? "is-selected" : ""}`} key={service.key}>
+                    <button className="quote-service" type="button" aria-pressed={active} onClick={() => toggleService(service.key)}>
+                      <span className="quote-check">{active ? <Check size={14} /> : null}</span>
+                      <span><strong>{service.label}</strong><small>{service.description}</small></span>
+                      <ArrowUpRight size={16} />
+                    </button>
+                    <button className="quote-service-info" type="button" aria-expanded={expanded} aria-controls={`quote-details-${service.key}`} onClick={() => setExpandedService(expanded ? null : service.key)}>
+                      Saiba mais <ChevronDown size={14} />
+                    </button>
+                    {expanded ? (
+                      <div className="quote-service-details" id={`quote-details-${service.key}`}>
+                        <p>{service.details}</p>
+                        <strong>A partir de {money.format(servicePrice)}{service.unitLabel}</strong>
+                        <ul>{service.benefits.map((benefit) => <li key={benefit}><Check size={13} /> {benefit}</li>)}</ul>
+                      </div>
+                    ) : null}
+                  </div>
                 );
               })}
             </div>
+            <p className="quote-combination-note"><Sparkles size={14} /> Em conjunto, posicionamento guia o conteúdo, a captação cria ativos fortes e os anúncios colocam tudo diante das pessoas certas.</p>
           </div>
 
           <aside className="quote-result reveal reveal-delay-3">
             <div className="quote-result-top"><span>Estimativa inicial</span><Calculator size={20} /></div>
             <div className="quote-plan"><small>Plano sugerido</small><strong>{planName}</strong></div>
-            <div className="quote-total"><span>a partir de</span><strong>{money.format(total)}<small>/mês</small></strong></div>
-            <p>Uma referência para começar a conversa. O valor final é ajustado depois de entendermos o momento e a meta da sua marca.</p>
+            <div className="quote-total"><span>a partir de</span><strong>{money.format(total)}<small>{selectedServices.includes("cinematic") ? " mix inicial" : "/mês"}</small></strong></div>
+            <p>Os serviços recorrentes são mensais. A captação cinematográfica parte de R$ 400 por sessão e entra no mix como referência.</p>
             <a className="button button-primary quote-button" href={whatsappQuote} target="_blank" rel="noreferrer">Continuar no WhatsApp <ArrowUpRight size={17} /></a>
           </aside>
         </div>

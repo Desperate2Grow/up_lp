@@ -226,7 +226,7 @@ export default function Home() {
             <span className="text-line"><span><em>Precisa ser lembrada.</em></span></span>
           </h1>
           <p className="hero-copy reveal reveal-delay-3">
-            A Up Clips transforma presença digital fraca e inconsistente em uma marca que chama atenção, gera confiança e abre conversas.
+            Posicionamento, conteúdo e tráfego para marcas que querem ser lembradas.
           </p>
           <div className="hero-actions reveal reveal-delay-4">
             <a className="button button-primary" href={whatsappLink} target="_blank" rel="noreferrer">
@@ -238,7 +238,7 @@ export default function Home() {
           </div>
           <div className="hero-note reveal reveal-delay-4">
             <span className="note-line" />
-            Para marcas que sabem que podem ser percebidas de outro jeito.
+            Clareza para ser escolhido.
           </div>
         </div>
         <a className="scroll-cue" href="#tension" aria-label="Rolar para a próxima seção">
@@ -246,6 +246,8 @@ export default function Home() {
           <ChevronDown size={16} />
         </a>
       </section>
+
+      <QuoteCalculator />
 
       <section className="marquee-band" aria-label="Especialidades da Up Clips">
         <div className="marquee-track">
@@ -258,13 +260,13 @@ export default function Home() {
         <div className="tension-layout">
           <div className="tension-intro reveal reveal-delay-1">
             <h2 className="text-reveal">
-              <span className="text-line"><span>Se você não ocupa um espaço na mente,</span></span>
-              <span className="text-line"><span><em>ocupa o espaço de ninguém.</em></span></span>
+              <span className="text-line"><span>Se sua marca não é lembrada,</span></span>
+              <span className="text-line"><span><em>ela é comparada.</em></span></span>
             </h2>
           </div>
           <div className="tension-copy reveal reveal-delay-2">
-            <p>Você entrega bem. Mas, no digital, sua marca parece igual a todas as outras. O perfil não traduz o seu valor, o conteúdo não cria conexão e o anúncio vira só mais um custo.</p>
-            <p className="copy-strong">O problema não é falta de esforço. É falta de direção.</p>
+            <p>Seu valor existe. Falta transformar isso em presença, desejo e conversa.</p>
+            <p className="copy-strong">Menos esforço solto. Mais direção.</p>
             <a className="inline-link" href={whatsappLink} target="_blank" rel="noreferrer">Quero uma direção clara <ArrowUpRight size={16} /></a>
           </div>
         </div>
@@ -279,10 +281,10 @@ export default function Home() {
         <div className="section-label reveal"><span>02</span> O jeito Up Clips</div>
         <div className="method-heading reveal reveal-delay-1">
           <h2 className="text-reveal">
-            <span className="text-line"><span>Da presença <span className="muted-word">apagada</span> à marca que</span></span>
-            <span className="text-line"><span><em>puxa conversa.</em></span></span>
+            <span className="text-line"><span>Presença clara.</span></span>
+            <span className="text-line"><span><em>Marca lembrada.</em></span></span>
           </h2>
-          <p>Não é sobre parecer maior. É sobre ser percebido pelo valor que você já entrega.</p>
+          <p>Mensagem, conteúdo e aquisição na mesma direção.</p>
         </div>
         <div className="service-grid" id="servicos">
           {serviceCards.map((card, index) => {
@@ -298,8 +300,6 @@ export default function Home() {
         </div>
       </section>
 
-      <QuoteCalculator />
-
       <section className="ads-section" id="aquisicao">
         <div className="ads-orbit orbit-one" /><div className="ads-orbit orbit-two" />
         <div className="section ads-inner">
@@ -314,13 +314,13 @@ export default function Home() {
           <div className="ads-grid">
             <article className="ads-card meta-card reveal reveal-delay-2">
               <div className="ads-card-head"><div className="platform-icon meta-icon"><Share2 size={24} /></div><div><span className="platform-tag">Meta</span><h3>Meta Ads</h3></div></div>
-              <p>Interrompa o scroll com uma ideia impossível de ignorar. Criativos e campanhas para gerar desejo antes mesmo do clique.</p>
+              <p>Ideias que interrompem o scroll e abrem conversas.</p>
               <div className="ads-features"><span><Share2 size={15} /> Instagram & Facebook</span><span><Sparkles size={15} /> Criativos que conectam</span><span><MessageCircle size={15} /> Conversas no WhatsApp</span></div>
               <a className="card-cta" href={whatsappLink} target="_blank" rel="noreferrer">Quero ser visto <ArrowUpRight size={16} /></a>
             </article>
             <article className="ads-card google-card reveal reveal-delay-3">
               <div className="ads-card-head"><div className="platform-icon google-icon"><Search size={24} /></div><div><span className="platform-tag">Google</span><h3>Google Ads</h3></div></div>
-              <p>Se alguém já está procurando pelo que você faz, sua marca precisa aparecer com a resposta certa — no momento certo.</p>
+              <p>Faça sua marca aparecer quando a intenção já existe.</p>
               <div className="ads-features"><span><Search size={15} /> Intenção de busca</span><span><MousePointerClick size={15} /> Palavras que convertem</span><span><Gauge size={15} /> Otimização contínua</span></div>
               <a className="card-cta" href={whatsappLink} target="_blank" rel="noreferrer">Quero ser encontrado <ArrowUpRight size={16} /></a>
             </article>
@@ -336,9 +336,9 @@ export default function Home() {
             <span className="text-line"><span><em>A gente mostra por que importa.</em></span></span>
           </h2>
           <div className="process-steps">
-            <div className="process-step reveal reveal-delay-1"><span>01</span><div><h3>Clareza</h3><p>Entendemos o que torna sua marca diferente — sem linguagem complicada.</p></div></div>
-            <div className="process-step reveal reveal-delay-2"><span>02</span><div><h3>Direção</h3><p>Organizamos mensagem, visual e campanha para tudo apontar para o mesmo lugar.</p></div></div>
-            <div className="process-step reveal reveal-delay-3"><span>03</span><div><h3>Movimento</h3><p>Colocamos sua marca em circulação e aprendemos com cada resposta do mercado.</p></div></div>
+            <div className="process-step reveal reveal-delay-1"><span>01</span><div><h3>Clareza</h3><p>O que torna sua marca diferente.</p></div></div>
+            <div className="process-step reveal reveal-delay-2"><span>02</span><div><h3>Direção</h3><p>Mensagem, visual e campanha alinhados.</p></div></div>
+            <div className="process-step reveal reveal-delay-3"><span>03</span><div><h3>Movimento</h3><p>Marca em circulação e aprendendo.</p></div></div>
           </div>
         </div>
         <div className="process-aside reveal reveal-delay-2">
@@ -356,7 +356,7 @@ export default function Home() {
             <span className="text-line"><span>Pronto para deixar de <span className="soft-white">parecer opção</span></span></span>
             <span className="text-line"><span>e se tornar <em>a escolha?</em></span></span>
           </h2>
-          <p>Conte para a gente onde sua marca está hoje. A primeira conversa é direta, humana e sem compromisso.</p>
+          <p>Uma conversa direta para descobrir o próximo passo.</p>
           <a className="button button-light" href={whatsappLink} target="_blank" rel="noreferrer">Falar com a Up Clips <ArrowUpRight size={18} /></a>
         </div>
       </section>

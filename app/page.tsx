@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   ArrowDownRight,
@@ -89,13 +88,13 @@ export default function Home() {
     <main>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Up Clips - início">
-          <Image
+          <img
             className="brand-mark"
             src="/up-clips-logo.png"
             alt=""
             width={52}
             height={52}
-            priority
+            decoding="async"
           />
           <span className="brand-name">UP CLIPS</span>
         </a>
@@ -276,7 +275,7 @@ export default function Home() {
       </section>
 
       <footer className="site-footer">
-        <a className="brand" href="#top" aria-label="Up Clips - voltar ao início"><Image className="brand-mark" src="/up-clips-logo.png" alt="" width={38} height={38} loading="lazy" /><span className="brand-name">UP CLIPS</span></a>
+        <a className="brand" href="#top" aria-label="Up Clips - voltar ao início"><img className="brand-mark" src="/up-clips-logo.png" alt="" width={38} height={38} loading="lazy" decoding="async" /><span className="brand-name">UP CLIPS</span></a>
         <div className="footer-meta"><span>Posicionamento que gera movimento.</span><a href="mailto:oi@upclips.com.br"><Mail size={15} /> oi@upclips.com.br</a></div>
         <div className="footer-end"><span>© 2025 Up Clips</span><a href="#top">Voltar ao topo <ArrowUpRight size={14} /></a></div>
       </footer>

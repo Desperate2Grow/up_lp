@@ -5,6 +5,7 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   BarChart3,
+  Calculator,
   Check,
   ChevronDown,
   Gauge,
@@ -60,6 +61,87 @@ const proofItems = [
   "Plano feito para o seu momento",
   "Comunicação que você entende",
 ];
+
+type QuoteServiceKey = "positioning" | "content" | "meta" | "google" | "management";
+
+const quoteServices: Array<{
+  key: QuoteServiceKey;
+  label: string;
+  description: string;
+  price: number;
+}> = [
+  { key: "positioning", label: "Posicionamento", description: "Mensagem e direção estratégica", price: 690 },
+  { key: "content", label: "Conteúdo", description: "Roteiro, criação e edição", price: 0 },
+  { key: "meta", label: "Meta Ads", description: "Campanhas para gerar demanda", price: 720 },
+  { key: "google", label: "Google Ads", description: "Busca e intenção de compra", price: 720 },
+  { key: "management", label: "Gestão contínua", description: "Acompanhamento e otimização", price: 490 },
+];
+
+function QuoteCalculator() {
+  const [videosPerWeek, setVideosPerWeek] = useState(4);
+  const [selectedServices, setSelectedServices] = useState<QuoteServiceKey[]>(["positioning", "content"]);
+  const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+  const contentPrice = 650 + videosPerWeek * 180;
+  const total = selectedServices.reduce((sum, key) => {
+    if (key === "content") return sum + contentPrice;
+    return sum + (quoteServices.find((service) => service.key === key)?.price ?? 0);
+  }, 0);
+  const planName = total < 2200 ? "Presença" : total < 3400 ? "Tração" : "Aceleração";
+  const selectedLabels = selectedServices.map((key) => quoteServices.find((service) => service.key === key)?.label).filter(Boolean).join(", ");
+  const whatsappQuote = `https://wa.me/?text=${encodeURIComponent(`Olá, Up Clips! Fiz uma simulação de plano. Serviços: ${selectedLabels}. Conteúdo: ${videosPerWeek} vídeos por semana. Estimativa: ${money.format(total)}/mês. Quero entender os próximos passos.`)}`;
+
+  const toggleService = (key: QuoteServiceKey) => {
+    setSelectedServices((current) => current.includes(key) ? current.filter((item) => item !== key) : [...current, key]);
+  };
+
+  return (
+    <section className="quote-section" id="simulador">
+      <div className="quote-glow" />
+      <div className="section quote-inner">
+        <div className="section-label light reveal"><span>03.5</span> Um próximo passo mais claro</div>
+        <div className="quote-heading reveal reveal-delay-1">
+          <div>
+            <p className="micro-kicker">Simulador de plano</p>
+            <h2>Monte o seu <em>próximo movimento.</em></h2>
+          </div>
+          <p>Escolha o que sua marca precisa agora e receba uma estimativa inicial em menos de um minuto.</p>
+        </div>
+
+        <div className="quote-layout">
+          <div className="quote-controls reveal reveal-delay-2">
+            <div className="quote-control-head"><span>01</span><strong>Quantos conteúdos por semana?</strong></div>
+            <div className="volume-control">
+              <div className="volume-value"><strong>{videosPerWeek}</strong><span>vídeos / semana</span></div>
+              <input aria-label="Quantidade de vídeos por semana" type="range" min="2" max="10" step="1" value={videosPerWeek} onChange={(event) => setVideosPerWeek(Number(event.target.value))} />
+              <div className="range-labels"><span>2</span><span>10</span></div>
+            </div>
+            <div className="quote-control-head services-head"><span>02</span><strong>O que entra no plano?</strong></div>
+            <div className="quote-service-list">
+              {quoteServices.map((service) => {
+                const active = selectedServices.includes(service.key);
+                return (
+                  <button className={`quote-service ${active ? "is-selected" : ""}`} key={service.key} type="button" aria-pressed={active} onClick={() => toggleService(service.key)}>
+                    <span className="quote-check">{active ? <Check size={14} /> : null}</span>
+                    <span><strong>{service.label}</strong><small>{service.description}</small></span>
+                    <ArrowUpRight size={16} />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <aside className="quote-result reveal reveal-delay-3">
+            <div className="quote-result-top"><span>Estimativa inicial</span><Calculator size={20} /></div>
+            <div className="quote-plan"><small>Plano sugerido</small><strong>{planName}</strong></div>
+            <div className="quote-total"><span>a partir de</span><strong>{money.format(total)}<small>/mês</small></strong></div>
+            <p>Uma referência para começar a conversa. O valor final é ajustado depois de entendermos o momento e a meta da sua marca.</p>
+            <a className="button button-primary quote-button" href={whatsappQuote} target="_blank" rel="noreferrer">Continuar no WhatsApp <ArrowUpRight size={17} /></a>
+          </aside>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -167,8 +249,7 @@ export default function Home() {
 
       <section className="marquee-band" aria-label="Especialidades da Up Clips">
         <div className="marquee-track">
-          <span>POSICIONAMENTO</span><i>✦</i><span>CONTEÚDO</span><i>✦</i><span>META ADS</span><i>✦</i><span>GOOGLE ADS</span><i>✦</i>
-          <span>POSICIONAMENTO</span><i>✦</i><span>CONTEÚDO</span><i>✦</i><span>META ADS</span><i>✦</i><span>GOOGLE ADS</span><i>✦</i>
+          <span>POSICIONAMENTO</span><i>✦</i><span>CONTEÚDO</span><i>✦</i><span>META ADS</span><i>✦</i><span>GOOGLE ADS</span>
         </div>
       </section>
 
@@ -216,6 +297,8 @@ export default function Home() {
           })}
         </div>
       </section>
+
+      <QuoteCalculator />
 
       <section className="ads-section" id="aquisicao">
         <div className="ads-orbit orbit-one" /><div className="ads-orbit orbit-two" />

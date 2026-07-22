@@ -359,18 +359,6 @@ export default function Home() {
   return (
     <main>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Up Clips - início">
-          <img
-            className="brand-mark"
-            src="/up-clips-logo.png"
-            alt=""
-            width={52}
-            height={52}
-            decoding="async"
-          />
-          <span className="brand-name">UP CLIPS</span>
-        </a>
-
         <nav className={`main-nav ${menuOpen ? "is-open" : ""}`} aria-label="Navegação principal">
           {navItems.map((item) => (
             <a key={item.href} href={item.href} onClick={closeMenu}>
@@ -400,6 +388,13 @@ export default function Home() {
         <div className="hero-glow hero-glow-two" />
         <div className="hero-grid" />
         <div className="hero-content">
+          <a className="hero-brand-lockup reveal" href="#top" aria-label="Up Clips - início">
+            <img src="/up-clips-logo.png" alt="" width={120} height={120} decoding="async" />
+            <span>
+              <strong>UP CLIPS</strong>
+              <small>Estratégia, criação & performance</small>
+            </span>
+          </a>
           <div className="eyebrow reveal reveal-delay-1">
             <span className="eyebrow-dot" />
             Agência de posicionamento & aquisição

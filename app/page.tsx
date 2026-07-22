@@ -136,8 +136,9 @@ export default function Home() {
             <span className="eyebrow-dot" />
             Agência de posicionamento & aquisição
           </div>
-          <h1 className="hero-title reveal reveal-delay-2">
-            Sua marca não precisa de mais posts. <em>Precisa ser lembrada.</em>
+          <h1 className="hero-title text-reveal reveal reveal-delay-2">
+            <span className="text-line"><span>Sua marca não precisa de mais posts.</span></span>
+            <span className="text-line"><span><em>Precisa ser lembrada.</em></span></span>
           </h1>
           <p className="hero-copy reveal reveal-delay-3">
             A Up Clips transforma presença digital fraca e inconsistente em uma marca que chama atenção, gera confiança e abre conversas.
@@ -172,7 +173,10 @@ export default function Home() {
         <div className="section-label reveal"><span>01</span> O que está travando sua marca</div>
         <div className="tension-layout">
           <div className="tension-intro reveal reveal-delay-1">
-            <h2>Se você não ocupa um espaço na mente, <em>ocupa o espaço de ninguém.</em></h2>
+            <h2 className="text-reveal">
+              <span className="text-line"><span>Se você não ocupa um espaço na mente,</span></span>
+              <span className="text-line"><span><em>ocupa o espaço de ninguém.</em></span></span>
+            </h2>
           </div>
           <div className="tension-copy reveal reveal-delay-2">
             <p>Você entrega bem. Mas, no digital, sua marca parece igual a todas as outras. O perfil não traduz o seu valor, o conteúdo não cria conexão e o anúncio vira só mais um custo.</p>
@@ -190,7 +194,10 @@ export default function Home() {
       <section className="section method-section" id="metodo">
         <div className="section-label reveal"><span>02</span> O jeito Up Clips</div>
         <div className="method-heading reveal reveal-delay-1">
-          <h2>Da presença <span>apagada</span> à marca que <em>puxa conversa.</em></h2>
+          <h2 className="text-reveal">
+            <span className="text-line"><span>Da presença <span className="muted-word">apagada</span> à marca que</span></span>
+            <span className="text-line"><span><em>puxa conversa.</em></span></span>
+          </h2>
           <p>Não é sobre parecer maior. É sobre ser percebido pelo valor que você já entrega.</p>
         </div>
         <div className="service-grid" id="servicos">
@@ -213,7 +220,10 @@ export default function Home() {
           <div className="section-label light reveal"><span>03</span> Atenção que vira oportunidade</div>
           <div className="ads-heading reveal reveal-delay-1">
             <p className="micro-kicker">Aquisição com intenção</p>
-            <h2>Não compramos cliques.<br /><em>Construímos próximos passos.</em></h2>
+            <h2 className="text-reveal">
+              <span className="text-line"><span>Não compramos cliques.</span></span>
+              <span className="text-line"><span><em>Construímos próximos passos.</em></span></span>
+            </h2>
           </div>
           <div className="ads-grid">
             <article className="ads-card meta-card reveal reveal-delay-2">
@@ -235,7 +245,10 @@ export default function Home() {
       <section className="section process-section">
         <div className="process-content">
           <div className="section-label reveal"><span>04</span> Sem complicar</div>
-          <h2 className="reveal reveal-delay-1">Você traz o que sabe fazer.<br /><em>A gente mostra por que importa.</em></h2>
+          <h2 className="text-reveal reveal reveal-delay-1">
+            <span className="text-line"><span>Você traz o que sabe fazer.</span></span>
+            <span className="text-line"><span><em>A gente mostra por que importa.</em></span></span>
+          </h2>
           <div className="process-steps">
             <div className="process-step reveal reveal-delay-1"><span>01</span><div><h3>Clareza</h3><p>Entendemos o que torna sua marca diferente — sem linguagem complicada.</p></div></div>
             <div className="process-step reveal reveal-delay-2"><span>02</span><div><h3>Direção</h3><p>Organizamos mensagem, visual e campanha para tudo apontar para o mesmo lugar.</p></div></div>
@@ -253,7 +266,10 @@ export default function Home() {
         <div className="final-glow" />
         <div className="final-content reveal">
           <p className="micro-kicker">Seu próximo movimento começa aqui</p>
-          <h2>Pronto para deixar de <span>parecer opção</span> e se tornar <em>a escolha?</em></h2>
+          <h2 className="text-reveal">
+            <span className="text-line"><span>Pronto para deixar de <span className="soft-white">parecer opção</span></span></span>
+            <span className="text-line"><span>e se tornar <em>a escolha?</em></span></span>
+          </h2>
           <p>Conte para a gente onde sua marca está hoje. A primeira conversa é direta, humana e sem compromisso.</p>
           <a className="button button-light" href={whatsappLink} target="_blank" rel="noreferrer">Falar com a Up Clips <ArrowUpRight size={18} /></a>
         </div>

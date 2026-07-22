@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   ArrowDownRight,
   ArrowRight,
@@ -60,12 +60,6 @@ const serviceCards = [
   },
 ];
 
-const proofItems = [
-  "Diagnóstico sem enrolação",
-  "Plano feito para o seu momento",
-  "Comunicação que você entende",
-];
-
 type QuoteServiceKey = "positioning" | "content" | "meta" | "google" | "cinematic";
 
 const quoteServices: Array<{
@@ -84,10 +78,31 @@ const quoteServices: Array<{
   { key: "cinematic", label: "Captação cinematográfica para Ads", description: "Produção visual para criativos", price: 400, unitLabel: " por captação", details: "Uma captação com direção, luz e composição para transformar sua oferta em anúncios mais desejáveis e memoráveis.", benefits: ["Material com aparência profissional", "Variações para anúncios e redes", "Mais impacto no primeiro segundo"] },
 ];
 
+const quoteServiceIcons = {
+  positioning: Palette,
+  content: Film,
+  meta: Share2,
+  google: Search,
+  cinematic: Camera,
+} satisfies Record<QuoteServiceKey, typeof Palette>;
+
+const quoteServiceColors = {
+  positioning: "#c777ff",
+  content: "#ff7fc7",
+  meta: "#7b8cff",
+  google: "#63b3ff",
+  cinematic: "#ffb65c",
+} satisfies Record<QuoteServiceKey, string>;
+
 function QuoteCalculator() {
   const [videosPerWeek, setVideosPerWeek] = useState(4);
   const [selectedServices, setSelectedServices] = useState<QuoteServiceKey[]>(["positioning", "content"]);
   const [expandedService, setExpandedService] = useState<QuoteServiceKey | null>(null);
+  const [displayTotal, setDisplayTotal] = useState(0);
+  const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
+  const [quoteVisible, setQuoteVisible] = useState(false);
+  const displayTotalRef = useRef(0);
+  const quoteSectionRef = useRef<HTMLElement>(null);
   const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
   const contentPrice = 650 + videosPerWeek * 180;
   const total = selectedServices.reduce((sum, key) => {
@@ -95,15 +110,95 @@ function QuoteCalculator() {
     return sum + (quoteServices.find((service) => service.key === key)?.price ?? 0);
   }, 0);
   const planName = total < 2200 ? "Presença" : total < 3400 ? "Tração" : "Aceleração";
-  const selectedLabels = selectedServices.map((key) => quoteServices.find((service) => service.key === key)?.label).filter(Boolean).join(", ");
-  const whatsappQuote = `https://wa.me/?text=${encodeURIComponent(`Olá, Up Clips! Fiz uma simulação de plano. Serviços: ${selectedLabels}. Conteúdo: ${videosPerWeek} vídeos por semana. Estimativa do mix: ${money.format(total)}. Quero entender os próximos passos.`)}`;
+  const selectedBreakdown = quoteServices
+    .filter((service) => selectedServices.includes(service.key))
+    .map((service) => ({ ...service, currentPrice: service.key === "content" ? contentPrice : service.price }));
+  const selectedLabels = selectedBreakdown.map((service) => service.label).join(", ") || "a definir";
+  const hasPositioning = selectedServices.includes("positioning");
+  const hasContent = selectedServices.includes("content");
+  const hasCinematic = selectedServices.includes("cinematic");
+  const hasMeta = selectedServices.includes("meta");
+  const hasGoogle = selectedServices.includes("google");
+  const hasAds = hasMeta || hasGoogle;
+  const recurringTotal = selectedBreakdown.reduce((sum, service) => service.key === "cinematic" ? sum : sum + service.currentPrice, 0);
+  const activeStageCount = [hasPositioning, hasContent, hasCinematic, hasAds, hasAds && (hasContent || hasCinematic)].filter(Boolean).length;
+  const planStrength = activeStageCount * 20;
+  const whatsappQuote = `https://wa.me/?text=${encodeURIComponent(`Olá, Up Clips! Montei o plano ${planName} no site. Serviços: ${selectedLabels}. Conteúdo: ${videosPerWeek} vídeos por semana. Investimento estimado: ${money.format(total)}${hasCinematic ? ` no mix inicial e ${money.format(recurringTotal)}/mês em recorrência` : "/mês"}. Quero validar esse plano com vocês.`)}`;
+
+  const recommendation: { message: string; actionKey?: QuoteServiceKey; actionLabel?: string } = (() => {
+    if (!selectedServices.length) return { message: "Comece pela clareza: organize a mensagem antes de investir energia em produção.", actionKey: "positioning", actionLabel: "Adicionar posicionamento" };
+    if (hasAds && !hasPositioning) return { message: "Você já escolheu mídia. O posicionamento reduz desperdício ao dar uma mensagem clara para os anúncios.", actionKey: "positioning", actionLabel: "Fortalecer a mensagem" };
+    if (hasPositioning && !hasContent) return { message: "A estratégia está pronta para ganhar forma. Conteúdo transforma direção em presença recorrente.", actionKey: "content", actionLabel: "Adicionar conteúdo" };
+    if (hasContent && !hasAds) return { message: "Seu plano já cria conteúdo, mas ainda depende do alcance orgânico. Meta Ads acelera a distribuição.", actionKey: "meta", actionLabel: "Adicionar Meta Ads" };
+    if (hasAds && hasContent && !hasCinematic) return { message: "A distribuição está montada. Uma captação cinematográfica cria variações mais fortes para os testes.", actionKey: "cinematic", actionLabel: "Adicionar captação" };
+    if (hasMeta && !hasGoogle) return { message: "Meta gera descoberta. Google Ads pode completar o plano capturando quem já procura uma solução.", actionKey: "google", actionLabel: "Adicionar Google Ads" };
+    return { message: "Marca, conteúdo e aquisição agora trabalham como um sistema: a mensagem chama atenção e a mídia conduz até a conversa." };
+  })();
+
+  const pipelineStages = [
+    { label: "Marca", detail: "clareza", icon: Target, active: hasPositioning },
+    { label: "Conteúdo", detail: `${videosPerWeek} vídeos`, icon: Film, active: hasContent },
+    { label: "Captação", detail: "imagem", icon: Camera, active: hasCinematic },
+    { label: "Mídia", detail: hasMeta && hasGoogle ? "Meta + Google" : hasMeta ? "Meta" : hasGoogle ? "Google" : "alcance", icon: Megaphone, active: hasAds },
+    { label: "Lead", detail: "conversa", icon: MessageCircle, active: hasAds && (hasContent || hasCinematic) },
+  ];
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const reducedMotionFrame = requestAnimationFrame(() => {
+        displayTotalRef.current = total;
+        setDisplayTotal(total);
+      });
+      return () => cancelAnimationFrame(reducedMotionFrame);
+    }
+
+    const initialValue = displayTotalRef.current;
+    const difference = total - initialValue;
+    let startedAt: number | null = null;
+    let animationFrame = 0;
+
+    const animateTotal = (time: number) => {
+      if (startedAt === null) startedAt = time;
+      const progress = Math.min((time - startedAt) / 720, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const nextValue = Math.round(initialValue + difference * eased);
+      displayTotalRef.current = nextValue;
+      setDisplayTotal(nextValue);
+      if (progress < 1) animationFrame = requestAnimationFrame(animateTotal);
+    };
+
+    animationFrame = requestAnimationFrame(animateTotal);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [total]);
+
+  useEffect(() => {
+    const section = quoteSectionRef.current;
+    if (!section || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(([entry]) => setQuoteVisible(entry.isIntersecting), { threshold: 0.08 });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!mobileSummaryOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileSummaryOpen(false);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [mobileSummaryOpen]);
 
   const toggleService = (key: QuoteServiceKey) => {
     setSelectedServices((current) => current.includes(key) ? current.filter((item) => item !== key) : [...current, key]);
   };
 
   return (
-    <section className="quote-section" id="simulador">
+    <section className="quote-section" id="simulador" ref={quoteSectionRef}>
       <div className="quote-glow" />
       <div className="section quote-inner">
         <div className="section-label light reveal"><Calculator size={14} /> Um próximo passo mais claro</div>
@@ -112,7 +207,7 @@ function QuoteCalculator() {
             <p className="micro-kicker">Simulador de plano</p>
             <h2>Monte o seu <em>próximo movimento.</em></h2>
           </div>
-          <p>Escolha o que sua marca precisa agora e receba uma estimativa inicial em menos de um minuto.</p>
+          <div className="quote-heading-aside"><p>Escolha o que sua marca precisa agora. O plano reage a cada decisão.</p><span><Gauge size={15} /> Leva cerca de 1 minuto</span></div>
         </div>
 
         <div className="quote-layout">
@@ -130,11 +225,11 @@ function QuoteCalculator() {
                 const expanded = expandedService === service.key;
                 const servicePrice = service.key === "content" ? contentPrice : service.price;
                 return (
-                  <div className={`quote-service-item ${active ? "is-selected" : ""}`} key={service.key}>
+                  <div className={`quote-service-item ${active ? "is-selected" : ""}`} key={service.key} style={{ "--service-color": quoteServiceColors[service.key] } as CSSProperties}>
                     <button className="quote-service" type="button" aria-pressed={active} onClick={() => toggleService(service.key)}>
                       <span className="quote-check">{active ? <Check size={14} /> : null}</span>
                       <span><strong>{service.label}</strong><small>{service.description}</small></span>
-                      <ArrowUpRight size={16} />
+                      <span className="quote-service-trailing"><b>{money.format(servicePrice)}</b><ArrowUpRight size={15} /></span>
                     </button>
                     <button className="quote-service-info" type="button" aria-expanded={expanded} aria-controls={`quote-details-${service.key}`} onClick={() => setExpandedService(expanded ? null : service.key)}>
                       Saiba mais <ChevronDown size={14} />
@@ -154,14 +249,82 @@ function QuoteCalculator() {
           </div>
 
           <aside className="quote-result reveal reveal-delay-3">
-            <div className="quote-result-top"><span>Estimativa inicial</span><Calculator size={20} /></div>
-            <div className="quote-plan"><small>Plano sugerido</small><strong>{planName}</strong></div>
-            <div className="quote-total"><span>a partir de</span><strong>{money.format(total)}<small>{selectedServices.includes("cinematic") ? " mix inicial" : "/mês"}</small></strong></div>
-            <p>Os serviços recorrentes são mensais. A captação cinematográfica parte de R$ 400 por sessão e entra no mix como referência.</p>
+            <div className="quote-result-top"><span>Seu plano ao vivo</span><span className="quote-live"><i /> Atualizado</span></div>
+
+            <div className="quote-plan-heading">
+              <div className="quote-plan"><small>Plano sugerido</small><strong>{planName}</strong></div>
+              <div className="quote-strength" style={{ "--strength": `${planStrength * 3.6}deg` } as CSSProperties}><span><strong>{planStrength}%</strong><small>potência</small></span></div>
+            </div>
+
+            <div className="quote-pipeline" aria-label="Jornada construída pelo plano">
+              {pipelineStages.map((stage, index) => {
+                const StageIcon = stage.icon;
+                return (
+                  <div className={`quote-stage ${stage.active ? "is-active" : ""}`} key={stage.label}>
+                    <span><StageIcon size={15} /></span>
+                    <strong>{stage.label}</strong>
+                    <small>{stage.detail}</small>
+                    {stage.label === "Conteúdo" && stage.active ? <span className="quote-storyboard" aria-hidden="true">{Array.from({ length: Math.min(videosPerWeek, 6) }, (_, frame) => <i key={frame} />)}</span> : null}
+                    {index < pipelineStages.length - 1 ? <i /> : null}
+                  </div>
+                );
+              })}
+            </div>
+            {hasAds ? <div className="quote-outcome-flow">{hasMeta ? <span><Share2 size={13} /> atenção <i>→</i> conversa</span> : null}{hasGoogle ? <span><Search size={13} /> busca <i>→</i> clique <i>→</i> oportunidade</span> : null}</div> : null}
+
+            <div className="quote-total"><span>{hasCinematic ? "investimento inicial estimado" : "estimativa mensal"}</span><strong>{money.format(displayTotal)}<small>{hasCinematic ? " mix inicial" : "/mês"}</small></strong></div>
+
+            <div className="quote-composition">
+              <div className="quote-composition-head"><span>Composição do investimento</span><strong>{selectedBreakdown.length} {selectedBreakdown.length === 1 ? "frente" : "frentes"}</strong></div>
+              {selectedBreakdown.length ? (
+                <>
+                  <div className="quote-budget-bar" aria-hidden="true">
+                    {selectedBreakdown.map((service) => <span key={service.key} style={{ width: `${total ? (service.currentPrice / total) * 100 : 0}%`, background: quoteServiceColors[service.key] }} />)}
+                  </div>
+                  <div className="quote-selected-list">
+                    {selectedBreakdown.map((service) => {
+                      const ServiceIcon = quoteServiceIcons[service.key];
+                      return (
+                        <div className="quote-selected-item" key={service.key} style={{ "--service-color": quoteServiceColors[service.key] } as CSSProperties}>
+                          <span className="quote-selected-icon"><ServiceIcon size={14} /></span>
+                          <span><strong>{service.label}</strong><small>{service.key === "cinematic" ? "por captação" : service.key === "content" ? `${videosPerWeek} vídeos por semana` : "recorrência mensal"}</small></span>
+                          <b>{money.format(service.currentPrice)}</b>
+                          <button type="button" onClick={() => toggleService(service.key)} aria-label={`Remover ${service.label}`}><X size={13} /></button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : <div className="quote-empty"><Layers3 size={18} /><span>Selecione uma frente para começar a construir o plano.</span></div>}
+            </div>
+
+            <div className="quote-insight"><Sparkles size={16} /><p>{recommendation.message}</p>{recommendation.actionKey ? <button type="button" onClick={() => toggleService(recommendation.actionKey!)}>{recommendation.actionLabel}<ArrowRight size={14} /></button> : null}</div>
+            <p className="quote-disclaimer">{hasCinematic ? `A recorrência estimada fica em ${money.format(recurringTotal)}/mês. A captação entra a partir de R$ 400 por sessão.` : "Estimativa mensal inicial. O escopo final é validado com você antes de qualquer contratação."}</p>
             <a className="button button-primary quote-button" href={whatsappQuote} target="_blank" rel="noreferrer">Continuar no WhatsApp <ArrowUpRight size={17} /></a>
           </aside>
         </div>
       </div>
+
+      <div className={`quote-mobile-bar ${quoteVisible ? "is-visible" : ""}`}>
+        <div><small>Plano {planName}</small><strong>{money.format(displayTotal)}<span>{hasCinematic ? " inicial" : "/mês"}</span></strong></div>
+        <button type="button" onClick={() => setMobileSummaryOpen(true)}>Ver meu plano <ArrowUpRight size={16} /></button>
+      </div>
+
+      {mobileSummaryOpen ? (
+        <div className="quote-drawer-backdrop" onMouseDown={() => setMobileSummaryOpen(false)}>
+          <aside className="quote-drawer" role="dialog" aria-modal="true" aria-label="Resumo do plano" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="quote-drawer-head"><div><small>Seu plano sugerido</small><strong>{planName}</strong></div><button type="button" onClick={() => setMobileSummaryOpen(false)} aria-label="Fechar resumo"><X size={19} /></button></div>
+            <div className="quote-drawer-total"><span>{hasCinematic ? "Mix inicial" : "Estimativa mensal"}</span><strong>{money.format(displayTotal)}</strong></div>
+            <div className="quote-drawer-pipeline">{pipelineStages.map((stage) => { const StageIcon = stage.icon; return <span className={stage.active ? "is-active" : ""} key={stage.label}><StageIcon size={14} />{stage.label}</span>; })}</div>
+            <div className="quote-drawer-list">
+              {selectedBreakdown.map((service) => { const ServiceIcon = quoteServiceIcons[service.key]; return <div key={service.key}><span><ServiceIcon size={14} /><strong>{service.label}</strong></span><b>{money.format(service.currentPrice)}</b></div>; })}
+            </div>
+            <div className="quote-drawer-insight"><Sparkles size={15} /><p>{recommendation.message}</p></div>
+            <p className="quote-drawer-note">{hasCinematic ? `Recorrência estimada: ${money.format(recurringTotal)}/mês. Captação: a partir de R$ 400.` : "A proposta final é ajustada ao momento e às metas da sua marca."}</p>
+            <a className="button button-primary" href={whatsappQuote} target="_blank" rel="noreferrer">Validar plano no WhatsApp <MessageCircle size={17} /></a>
+          </aside>
+        </div>
+      ) : null}
     </section>
   );
 }

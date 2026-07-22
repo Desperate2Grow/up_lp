@@ -3,18 +3,24 @@
 import { useEffect, useState } from "react";
 import {
   ArrowDownRight,
+  ArrowRight,
   ArrowUpRight,
   BarChart3,
   Calculator,
+  Camera,
   Check,
   ChevronDown,
+  Clapperboard,
+  Film,
   Gauge,
+  Layers3,
   Mail,
   Megaphone,
   Menu,
   MessageCircle,
   MousePointerClick,
   Palette,
+  Play,
   Search,
   Share2,
   Sparkles,
@@ -29,6 +35,7 @@ const whatsappLink =
 const navItems = [
   { label: "Método", href: "#metodo" },
   { label: "Serviços", href: "#servicos" },
+  { label: "Captação", href: "#captacao" },
   { label: "Aquisição", href: "#aquisicao" },
 ];
 
@@ -224,14 +231,11 @@ export default function Home() {
       </header>
 
       <section className="hero" id="top">
+        <img className="hero-image" src="/up-clips-hero-studio.webp" alt="Equipe criativa da Up Clips produzindo um anúncio em estúdio" width={1536} height={1024} fetchPriority="high" decoding="async" />
+        <div className="hero-image-shade" />
         <div className="hero-glow hero-glow-one" />
         <div className="hero-glow hero-glow-two" />
         <div className="hero-grid" />
-        <div className="hero-streak streak-one" />
-        <div className="hero-streak streak-two" />
-        <div className="hero-streak streak-three" />
-        <div className="hero-spark spark-one" />
-        <div className="hero-spark spark-two" />
         <div className="hero-content">
           <div className="eyebrow reveal reveal-delay-1">
             <span className="eyebrow-dot" />
@@ -257,6 +261,7 @@ export default function Home() {
             Clareza para ser escolhido.
           </div>
         </div>
+        <div className="hero-production-tag reveal reveal-delay-3"><span className="live-dot" /><div><small>Em produção</small><strong>CRIATIVOS QUE PARAM O SCROLL</strong></div><Camera size={18} /></div>
         <a className="scroll-cue" href="#tension" aria-label="Rolar para a próxima seção">
           <span>role para descobrir</span>
           <ChevronDown size={16} />
@@ -291,6 +296,14 @@ export default function Home() {
           <div className="signal-card reveal reveal-delay-2"><Megaphone className="signal-icon" size={18} /><strong>Você anuncia, mas não converte.</strong><span>Tráfego sem mensagem que conecta.</span></div>
           <div className="signal-card reveal reveal-delay-3"><MessageCircle className="signal-icon" size={18} /><strong>Você explica demais.</strong><span>Quando a marca poderia falar por si.</span></div>
         </div>
+        <div className="brand-shift reveal">
+          <div className="brand-shift-copy"><span>DA PRESENÇA SOLTA</span><strong>PARA UMA MARCA QUE AS PESSOAS RECONHECEM.</strong><p>Estratégia organiza. Conteúdo repete os sinais certos. Aquisição transforma atenção em oportunidade.</p></div>
+          <div className="feed-compare" aria-label="Comparação visual de uma presença digital inconsistente com uma presença de marca organizada">
+            <div className="feed-frame feed-before"><div className="feed-head"><span /><i /></div><div className="feed-grid"><span /><span /><span /><span /><span /><span /></div><small>SEM DIREÇÃO</small></div>
+            <ArrowRight className="feed-arrow" size={22} />
+            <div className="feed-frame feed-after"><div className="feed-head"><span /><i /></div><div className="feed-grid"><span /><span /><span /><span /><span /><span /></div><small>COM SISTEMA DE MARCA</small></div>
+          </div>
+        </div>
       </section>
 
       <section className="phrase-band phrase-band-dark" aria-label="Direção da Up Clips">
@@ -312,11 +325,34 @@ export default function Home() {
             return (
               <article className={`service-card accent-${card.accent} reveal reveal-delay-${index + 1}`} key={card.title}>
                 <div className="card-topline"><Icon size={22} strokeWidth={1.65} /></div>
+                <div className={`service-visual service-visual-${card.accent}`} aria-hidden="true"><span /><span /><span /><span /></div>
                 <div className="card-body"><h3>{card.title}</h3><p>{card.text}</p></div>
                 <ArrowUpRight className="card-arrow" size={20} />
               </article>
             );
           })}
+        </div>
+      </section>
+
+      <section className="capture-section" id="captacao">
+        <div className="section capture-inner">
+          <div className="capture-media reveal">
+            <img src="/up-clips-cinematic-capture.webp" alt="Captação cinematográfica de um criativo para anúncio" width={1120} height={1400} loading="lazy" decoding="async" />
+            <div className="capture-corners" aria-hidden="true" />
+            <div className="capture-price"><Camera size={17} /><span>Captação base</span><strong>R$ 400</strong></div>
+          </div>
+          <div className="capture-copy reveal reveal-delay-2">
+            <div className="section-label light"><Clapperboard size={14} /> Imagem que sustenta a promessa</div>
+            <p className="micro-kicker">Captação cinematográfica para Ads</p>
+            <h2 className="text-reveal"><span className="text-line"><span>Seu anúncio tem um segundo</span></span><span className="text-line"><span><em>para parecer relevante.</em></span></span></h2>
+            <p className="capture-lead">Direção, luz e enquadramento para transformar uma oferta comum em um criativo com presença.</p>
+            <div className="capture-points">
+              <div><Film size={18} /><span><strong>Material com intenção</strong><small>Cenas pensadas para anúncio, não apenas para preencher o feed.</small></span></div>
+              <div><Layers3 size={18} /><span><strong>Uma captação, vários ativos</strong><small>Cortes para Reels, Stories, campanhas e testes de criativo.</small></span></div>
+              <div><Play size={18} /><span><strong>Primeiro segundo mais forte</strong><small>Movimento, produto e mensagem organizados para segurar atenção.</small></span></div>
+            </div>
+            <a className="button button-primary" href={whatsappLink} target="_blank" rel="noreferrer">Quero planejar uma captação <ArrowUpRight size={17} /></a>
+          </div>
         </div>
       </section>
 
@@ -334,12 +370,14 @@ export default function Home() {
           <div className="ads-grid">
             <article className="ads-card meta-card reveal reveal-delay-2">
               <div className="ads-card-head"><div className="platform-icon meta-icon"><Share2 size={24} /></div><div><span className="platform-tag">Meta</span><h3>Meta Ads</h3></div></div>
+              <div className="ad-preview meta-preview" aria-label="Exemplo visual de anúncio para Instagram e Facebook"><div className="preview-top"><span /><i /></div><div className="preview-media"><Play size={23} fill="currentColor" /></div><div className="preview-lines"><span /><span /></div><div className="preview-action"><MessageCircle size={13} /> Conversar no WhatsApp</div></div>
               <p>Ideias que interrompem o scroll e abrem conversas.</p>
               <div className="ads-features"><span><Share2 size={15} /> Instagram & Facebook</span><span><Sparkles size={15} /> Criativos que conectam</span><span><MessageCircle size={15} /> Conversas no WhatsApp</span></div>
               <a className="card-cta" href={whatsappLink} target="_blank" rel="noreferrer">Quero ser visto <ArrowUpRight size={16} /></a>
             </article>
             <article className="ads-card google-card reveal reveal-delay-3">
               <div className="ads-card-head"><div className="platform-icon google-icon"><Search size={24} /></div><div><span className="platform-tag">Google</span><h3>Google Ads</h3></div></div>
+              <div className="ad-preview search-preview" aria-label="Exemplo visual de anúncio na busca do Google"><div className="search-field"><span>agência para fortalecer marca</span><Search size={14} /></div><div className="search-result"><small>Anúncio · upclips.com.br</small><strong>Sua marca, finalmente clara.</strong><span>Posicionamento, conteúdo e mídia na mesma direção.</span></div><div className="search-result muted-result"><small>Resultado orgânico</small><strong>Outras opções</strong></div></div>
               <p>Faça sua marca aparecer quando a intenção já existe.</p>
               <div className="ads-features"><span><Search size={15} /> Intenção de busca</span><span><MousePointerClick size={15} /> Palavras que convertem</span><span><Gauge size={15} /> Otimização contínua</span></div>
               <a className="card-cta" href={whatsappLink} target="_blank" rel="noreferrer">Quero ser encontrado <ArrowUpRight size={16} /></a>
@@ -367,6 +405,7 @@ export default function Home() {
         </div>
         <div className="process-aside reveal reveal-delay-2">
           <div className="aside-orb"><BarChart3 size={36} strokeWidth={1.2} /></div>
+          <div className="mini-pipeline" aria-label="Fluxo de estratégia até geração de leads"><span>MARCA</span><i /><span>CRIATIVO</span><i /><span>MÍDIA</span><i /><strong>LEAD</strong></div>
           <span>Uma marca consistente<br />é uma marca que cresce.</span>
           <a className="button button-outline" href={whatsappLink} target="_blank" rel="noreferrer">Começar conversa <MessageCircle size={17} /></a>
         </div>
@@ -388,7 +427,7 @@ export default function Home() {
       <footer className="site-footer">
         <a className="brand" href="#top" aria-label="Up Clips - voltar ao início"><img className="brand-mark" src="/up-clips-logo.png" alt="" width={38} height={38} loading="lazy" decoding="async" /><span className="brand-name">UP CLIPS</span></a>
         <div className="footer-meta"><span>Posicionamento que gera movimento.</span><a href="mailto:oi@upclips.com.br"><Mail size={15} /> oi@upclips.com.br</a></div>
-        <div className="footer-end"><span>© 2025 Up Clips</span><a href="#top">Voltar ao topo <ArrowUpRight size={14} /></a></div>
+        <div className="footer-end"><span>© 2026 Up Clips</span><a href="#top">Voltar ao topo <ArrowUpRight size={14} /></a></div>
       </footer>
     </main>
   );

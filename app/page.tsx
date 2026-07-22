@@ -34,21 +34,18 @@ const navItems = [
 
 const serviceCards = [
   {
-    number: "01",
     icon: Palette,
     title: "Posicionamento",
     text: "A clareza que transforma uma marca esquecida em uma escolha óbvia.",
     accent: "violet",
   },
   {
-    number: "02",
     icon: Sparkles,
     title: "Conteúdo que marca",
     text: "Direção criativa e conteúdo para criar presença, desejo e confiança.",
     accent: "pink",
   },
   {
-    number: "03",
     icon: TrendingUp,
     title: "Aquisição",
     text: "Campanhas que colocam sua mensagem diante de quem já está procurando.",
@@ -98,7 +95,7 @@ function QuoteCalculator() {
     <section className="quote-section" id="simulador">
       <div className="quote-glow" />
       <div className="section quote-inner">
-        <div className="section-label light reveal"><span>03.5</span> Um próximo passo mais claro</div>
+        <div className="section-label light reveal"><Calculator size={14} /> Um próximo passo mais claro</div>
         <div className="quote-heading reveal reveal-delay-1">
           <div>
             <p className="micro-kicker">Simulador de plano</p>
@@ -109,13 +106,13 @@ function QuoteCalculator() {
 
         <div className="quote-layout">
           <div className="quote-controls reveal reveal-delay-2">
-            <div className="quote-control-head"><span>01</span><strong>Quantos conteúdos por semana?</strong></div>
+            <div className="quote-control-head"><span className="control-icon"><Share2 size={15} /></span><strong>Quantos conteúdos por semana?</strong></div>
             <div className="volume-control">
               <div className="volume-value"><strong>{videosPerWeek}</strong><span>vídeos / semana</span></div>
               <input aria-label="Quantidade de vídeos por semana" type="range" min="2" max="10" step="1" value={videosPerWeek} onChange={(event) => setVideosPerWeek(Number(event.target.value))} />
               <div className="range-labels"><span>2</span><span>10</span></div>
             </div>
-            <div className="quote-control-head services-head"><span>02</span><strong>O que entra no plano?</strong></div>
+            <div className="quote-control-head services-head"><span className="control-icon"><Target size={15} /></span><strong>O que entra no plano?</strong></div>
             <div className="quote-service-list">
               {quoteServices.map((service) => {
                 const active = selectedServices.includes(service.key);
@@ -222,8 +219,8 @@ export default function Home() {
             Agência de posicionamento & aquisição
           </div>
           <h1 className="hero-title text-reveal reveal reveal-delay-2">
-            <span className="text-line"><span>Sua marca não precisa de mais posts.</span></span>
-            <span className="text-line"><span><em>Precisa ser lembrada.</em></span></span>
+            <span className="text-line"><span>Sua marca não precisa gritar.</span></span>
+            <span className="text-line"><span><em>Precisa ocupar espaço.</em></span></span>
           </h1>
           <p className="hero-copy reveal reveal-delay-3">
             Posicionamento, conteúdo e tráfego para marcas que querem ser lembradas.
@@ -256,12 +253,12 @@ export default function Home() {
       </section>
 
       <section className="section tension-section" id="tension">
-        <div className="section-label reveal"><span>01</span> O que está travando sua marca</div>
+        <div className="section-label reveal"><Target size={14} /> O que está travando sua marca</div>
         <div className="tension-layout">
           <div className="tension-intro reveal reveal-delay-1">
             <h2 className="text-reveal">
-              <span className="text-line"><span>Se sua marca não é lembrada,</span></span>
-              <span className="text-line"><span><em>ela é comparada.</em></span></span>
+              <span className="text-line"><span>Se sua marca parece igual,</span></span>
+              <span className="text-line"><span><em>o mercado trata igual.</em></span></span>
             </h2>
           </div>
           <div className="tension-copy reveal reveal-delay-2">
@@ -271,18 +268,22 @@ export default function Home() {
           </div>
         </div>
         <div className="signal-cards">
-          <div className="signal-card reveal reveal-delay-1"><span className="signal-index">A</span><strong>Você posta, mas não é lembrado.</strong><span>Presença sem percepção de valor.</span></div>
-          <div className="signal-card reveal reveal-delay-2"><span className="signal-index">B</span><strong>Você anuncia, mas não converte.</strong><span>Tráfego sem mensagem que conecta.</span></div>
-          <div className="signal-card reveal reveal-delay-3"><span className="signal-index">C</span><strong>Você explica demais.</strong><span>Quando a marca poderia falar por si.</span></div>
+          <div className="signal-card reveal reveal-delay-1"><Target className="signal-icon" size={18} /><strong>Você posta, mas não é lembrado.</strong><span>Presença sem percepção de valor.</span></div>
+          <div className="signal-card reveal reveal-delay-2"><Megaphone className="signal-icon" size={18} /><strong>Você anuncia, mas não converte.</strong><span>Tráfego sem mensagem que conecta.</span></div>
+          <div className="signal-card reveal reveal-delay-3"><MessageCircle className="signal-icon" size={18} /><strong>Você explica demais.</strong><span>Quando a marca poderia falar por si.</span></div>
         </div>
       </section>
 
+      <section className="phrase-band phrase-band-dark" aria-label="Direção da Up Clips">
+        <div className="phrase-inner reveal"><Sparkles size={18} /><p>Menos ruído. <em>Mais presença.</em></p></div>
+      </section>
+
       <section className="section method-section" id="metodo">
-        <div className="section-label reveal"><span>02</span> O jeito Up Clips</div>
+        <div className="section-label reveal"><Sparkles size={14} /> O jeito Up Clips</div>
         <div className="method-heading reveal reveal-delay-1">
           <h2 className="text-reveal">
-            <span className="text-line"><span>Presença clara.</span></span>
-            <span className="text-line"><span><em>Marca lembrada.</em></span></span>
+              <span className="text-line"><span>Posicionamento que vira linguagem.</span></span>
+              <span className="text-line"><span><em>Conteúdo que vira movimento.</em></span></span>
           </h2>
           <p>Mensagem, conteúdo e aquisição na mesma direção.</p>
         </div>
@@ -290,8 +291,8 @@ export default function Home() {
           {serviceCards.map((card, index) => {
             const Icon = card.icon;
             return (
-              <article className={`service-card accent-${card.accent} reveal reveal-delay-${index + 1}`} key={card.number}>
-                <div className="card-topline"><span>{card.number}</span><Icon size={22} strokeWidth={1.65} /></div>
+              <article className={`service-card accent-${card.accent} reveal reveal-delay-${index + 1}`} key={card.title}>
+                <div className="card-topline"><Icon size={22} strokeWidth={1.65} /></div>
                 <div className="card-body"><h3>{card.title}</h3><p>{card.text}</p></div>
                 <ArrowUpRight className="card-arrow" size={20} />
               </article>
@@ -303,12 +304,12 @@ export default function Home() {
       <section className="ads-section" id="aquisicao">
         <div className="ads-orbit orbit-one" /><div className="ads-orbit orbit-two" />
         <div className="section ads-inner">
-          <div className="section-label light reveal"><span>03</span> Atenção que vira oportunidade</div>
+          <div className="section-label light reveal"><TrendingUp size={14} /> Atenção que vira oportunidade</div>
           <div className="ads-heading reveal reveal-delay-1">
             <p className="micro-kicker">Aquisição com intenção</p>
             <h2 className="text-reveal">
-              <span className="text-line"><span>Não compramos cliques.</span></span>
-              <span className="text-line"><span><em>Construímos próximos passos.</em></span></span>
+              <span className="text-line"><span>Atenção não é sorte.</span></span>
+              <span className="text-line"><span><em>É estratégia em circulação.</em></span></span>
             </h2>
           </div>
           <div className="ads-grid">
@@ -328,17 +329,21 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="phrase-band phrase-band-purple" aria-label="Convite da Up Clips">
+        <div className="phrase-inner reveal"><MousePointerClick size={18} /><p>Clareza que <em>chama atenção.</em></p></div>
+      </section>
+
       <section className="section process-section">
         <div className="process-content">
-          <div className="section-label reveal"><span>04</span> Sem complicar</div>
+          <div className="section-label reveal"><Check size={14} /> Sem complicar</div>
           <h2 className="text-reveal reveal reveal-delay-1">
-            <span className="text-line"><span>Você traz o que sabe fazer.</span></span>
-            <span className="text-line"><span><em>A gente mostra por que importa.</em></span></span>
+            <span className="text-line"><span>Uma boa marca não explica tudo.</span></span>
+            <span className="text-line"><span><em>Ela deixa claro.</em></span></span>
           </h2>
           <div className="process-steps">
-            <div className="process-step reveal reveal-delay-1"><span>01</span><div><h3>Clareza</h3><p>O que torna sua marca diferente.</p></div></div>
-            <div className="process-step reveal reveal-delay-2"><span>02</span><div><h3>Direção</h3><p>Mensagem, visual e campanha alinhados.</p></div></div>
-            <div className="process-step reveal reveal-delay-3"><span>03</span><div><h3>Movimento</h3><p>Marca em circulação e aprendendo.</p></div></div>
+            <div className="process-step reveal reveal-delay-1"><span className="process-icon"><Target size={17} /></span><div><h3>Clareza</h3><p>O que torna sua marca diferente.</p></div></div>
+            <div className="process-step reveal reveal-delay-2"><span className="process-icon"><Palette size={17} /></span><div><h3>Direção</h3><p>Mensagem, visual e campanha alinhados.</p></div></div>
+            <div className="process-step reveal reveal-delay-3"><span className="process-icon"><TrendingUp size={17} /></span><div><h3>Movimento</h3><p>Marca em circulação e aprendendo.</p></div></div>
           </div>
         </div>
         <div className="process-aside reveal reveal-delay-2">
@@ -353,8 +358,8 @@ export default function Home() {
         <div className="final-content reveal">
           <p className="micro-kicker">Seu próximo movimento começa aqui</p>
           <h2 className="text-reveal">
-            <span className="text-line"><span>Pronto para deixar de <span className="soft-white">parecer opção</span></span></span>
-            <span className="text-line"><span>e se tornar <em>a escolha?</em></span></span>
+            <span className="text-line"><span>O próximo passo não precisa ser complicado.</span></span>
+            <span className="text-line"><span><em>Precisa começar.</em></span></span>
           </h2>
           <p>Uma conversa direta para descobrir o próximo passo.</p>
           <a className="button button-light" href={whatsappLink} target="_blank" rel="noreferrer">Falar com a Up Clips <ArrowUpRight size={18} /></a>

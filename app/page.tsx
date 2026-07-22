@@ -66,6 +66,10 @@ export default function Home() {
 
   useEffect(() => {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
+    if (!("IntersectionObserver" in window)) {
+      nodes.forEach((node) => node.classList.add("is-visible"));
+      return;
+    }
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

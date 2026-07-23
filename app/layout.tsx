@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://up-clips.vesco.chatgpt.site"),
+  metadataBase: new URL("https://upclips.com.br"),
   title: "Up Clips — Marcas que são lembradas",
   description:
     "Posicionamento, conteúdo e tráfego pago para marcas que querem ser percebidas de outro jeito.",
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/up-clips-logo.png",
   },

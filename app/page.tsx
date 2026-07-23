@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 
 const whatsappLink =
-  "https://wa.me/?text=Ol%C3%A1%2C%20quero%20entender%20como%20a%20Up%20Clips%20pode%20fortalecer%20minha%20marca.";
+  "https://wa.me/5511954829186?text=Ol%C3%A1%2C%20quero%20entender%20como%20a%20Up%20Clips%20pode%20fortalecer%20minha%20marca.";
 
 const navItems = [
   { label: "Método", href: "#metodo" },
@@ -123,7 +123,7 @@ function QuoteCalculator() {
   const recurringTotal = selectedBreakdown.reduce((sum, service) => service.key === "cinematic" ? sum : sum + service.currentPrice, 0);
   const activeStageCount = [hasPositioning, hasContent, hasCinematic, hasAds, hasAds && (hasContent || hasCinematic)].filter(Boolean).length;
   const planStrength = activeStageCount * 20;
-  const whatsappQuote = `https://wa.me/?text=${encodeURIComponent(`Olá, Up Clips! Montei o plano ${planName} no site. Serviços: ${selectedLabels}. Conteúdo: ${videosPerWeek} vídeos por semana. Investimento estimado: ${money.format(total)}${hasCinematic ? ` no mix inicial e ${money.format(recurringTotal)}/mês em recorrência` : "/mês"}. Quero validar esse plano com vocês.`)}`;
+  const whatsappQuote = `https://wa.me/5511954829186?text=${encodeURIComponent(`Olá, Up Clips! Montei o plano ${planName} no site. Serviços: ${selectedLabels}. Conteúdo: ${videosPerWeek} vídeos por semana. Investimento estimado: ${money.format(total)}${hasCinematic ? ` no mix inicial e ${money.format(recurringTotal)}/mês em recorrência` : "/mês"}. Quero validar esse plano com vocês.`)}`;
 
   const recommendation: { message: string; actionKey?: QuoteServiceKey; actionLabel?: string } = (() => {
     if (!selectedServices.length) return { message: "Comece pela clareza: organize a mensagem antes de investir energia em produção.", actionKey: "positioning", actionLabel: "Adicionar posicionamento" };

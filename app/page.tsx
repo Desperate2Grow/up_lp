@@ -8,12 +8,15 @@ import {
   Building2,
   Camera,
   Check,
+  ChevronDown,
   CircleOff,
+  CircleDollarSign,
   Compass,
   Film,
   Gauge,
   ImageIcon,
   Layers3,
+  Lock,
   MessageCircle,
   Music2,
   PanelTop,
@@ -37,6 +40,7 @@ type ChannelKey = "instagram" | "tiktok" | "youtube" | "landing" | "ecommerce" |
 type GoalKey = "positioning" | "consistency" | "conversations" | "sales" | "launch";
 type PaceKey = "essential" | "constant" | "accelerate";
 type ServiceKey = "positioning" | "content" | "cinematic" | "meta" | "google" | "conversion";
+type BillingType = "monthly" | "once";
 
 type Recommendation = {
   name: string;
@@ -76,14 +80,92 @@ const paceOptions = [
   { key: "accelerate" as const, icon: Zap, title: "Acelerar agora", text: "Mais frentes trabalhando juntas desde o início." },
 ];
 
+const fixedServices: ServiceKey[] = ["positioning", "content"];
+
 const serviceCatalog = {
-  positioning: { icon: Target, title: "Posicionamento estratégico", short: "Mensagem, público e oferta na mesma direção." },
-  content: { icon: Film, title: "Conteúdo com direção", short: "Uma presença reconhecível, não apenas mais posts." },
-  cinematic: { icon: Camera, title: "Captação cinematográfica", short: "Ativos de maior impacto para conteúdo e anúncios." },
-  meta: { icon: Share2, title: "Meta Ads", short: "Descoberta, demanda e conversas pelo Instagram e Facebook." },
-  google: { icon: Search, title: "Google Ads", short: "Presença diante de quem já procura uma solução." },
-  conversion: { icon: PanelTop, title: "Estrutura de conversão", short: "Uma rota clara entre o interesse e o contato." },
-} satisfies Record<ServiceKey, { icon: typeof Target; title: string; short: string }>;
+  positioning: {
+    icon: Target,
+    title: "Posicionamento estratégico",
+    short: "Mensagem, público e oferta na mesma direção.",
+    price: 690,
+    billing: "monthly" as BillingType,
+    priceLabel: "/mês",
+    fixed: true,
+    details: "É a base que impede conteúdo e anúncios de comunicarem promessas diferentes. Organizamos a percepção que sua marca precisa construir antes de ampliar o alcance.",
+    benefits: ["Direção de mensagem e oferta", "Público e diferenciais prioritários", "Critério para aprovar conteúdo e campanhas"],
+  },
+  content: {
+    icon: Film,
+    title: "Conteúdo com direção",
+    short: "Estratégia, roteiro e edição de 4 vídeos por semana.",
+    price: 1370,
+    billing: "monthly" as BillingType,
+    priceLabel: "/mês",
+    fixed: true,
+    details: "Transforma o posicionamento em presença recorrente. O cliente deixa de encontrar uma marca silenciosa ou inconsistente quando chega pelos anúncios ou pelas redes.",
+    benefits: ["4 vídeos por semana", "Roteiros alinhados ao posicionamento", "Edição e variações para os canais"],
+  },
+  cinematic: {
+    icon: Camera,
+    title: "Captação cinematográfica para Ads",
+    short: "Uma sessão dirigida para elevar o impacto dos criativos.",
+    price: 400,
+    billing: "once" as BillingType,
+    priceLabel: "/captação",
+    fixed: false,
+    details: "Entra quando a velocidade ou o lançamento pede material com maior percepção de valor. A sessão gera imagens pensadas desde a origem para prender atenção e virar variações de anúncio.",
+    benefits: ["Direção de cena, luz e enquadramento", "Material para anúncios e redes", "Base visual para múltiplos cortes"],
+  },
+  meta: {
+    icon: Share2,
+    title: "Meta Ads",
+    short: "Descoberta, demanda e conversas pelo Instagram e Facebook.",
+    price: 720,
+    billing: "monthly" as BillingType,
+    priceLabel: "/mês",
+    fixed: false,
+    details: "É indicado quando a marca precisa gerar demanda, alcançar novos públicos e transformar criativos em conversas. A gestão conecta mensagem, segmentação e testes.",
+    benefits: ["Estrutura e gestão de campanhas", "Testes de públicos e criativos", "Otimização para conversas e oportunidades"],
+  },
+  google: {
+    icon: Search,
+    title: "Google Ads",
+    short: "Presença diante de quem já procura uma solução.",
+    price: 720,
+    billing: "monthly" as BillingType,
+    priceLabel: "/mês",
+    fixed: false,
+    details: "Entra quando já existe intenção de busca ou uma estrutura que pode converter essa procura. Complementa o Meta capturando demanda ativa, em vez de depender apenas da descoberta.",
+    benefits: ["Mapeamento de buscas relevantes", "Campanhas por intenção", "Otimização de cliques e oportunidades"],
+  },
+  conversion: {
+    icon: PanelTop,
+    title: "Landing page de conversão",
+    short: "Uma rota direta entre o interesse e o contato.",
+    price: 890,
+    billing: "once" as BillingType,
+    priceLabel: "implantação",
+    fixed: false,
+    details: "É recomendada quando os anúncios não têm um destino claro. A página concentra argumento, prova e chamada para ação para reduzir a perda entre o clique e o WhatsApp.",
+    benefits: ["Estrutura de argumento e oferta", "Página responsiva focada em conversão", "Integração direta com o WhatsApp"],
+  },
+} satisfies Record<ServiceKey, {
+  icon: typeof Target;
+  title: string;
+  short: string;
+  price: number;
+  billing: BillingType;
+  priceLabel: string;
+  fixed: boolean;
+  details: string;
+  benefits: string[];
+}>;
+
+const money = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+  maximumFractionDigits: 0,
+});
 
 const agencyLabels: Record<AgencyKey, string> = {
   none: "sem agência",
@@ -118,22 +200,20 @@ function createRecommendation(
   const noPresence = channels.includes("none");
   const hasSocial = channels.some((channel) => ["instagram", "tiktok", "youtube"].includes(channel));
   const hasConversion = channels.some((channel) => ["landing", "ecommerce"].includes(channel));
-  const services = new Set<ServiceKey>();
+  const services = new Set<ServiceKey>(fixedServices);
   const reasons: Partial<Record<ServiceKey, string>> = {};
 
-  if (noPresence || goal === "positioning" || agency === "none") {
-    services.add("positioning");
-    reasons.positioning = noPresence
+  reasons.positioning = agency === "agency"
+    ? "Cria um norte compartilhado para complementar sua agência atual sem duplicar esforços ou enfraquecer a mensagem."
+    : noPresence
       ? "Antes dos canais, sua marca precisa de uma mensagem que organize todas as decisões."
       : "Alinha o que já existe para sua marca ser reconhecida pela mesma ideia em todos os pontos.";
-  }
 
-  if (noPresence || hasSocial || goal === "consistency" || goal === "launch") {
-    services.add("content");
-    reasons.content = hasSocial
-      ? "Transforma seus canais atuais em uma presença coerente, recorrente e reconhecível."
-      : "Cria os primeiros sinais de presença para sua marca começar a ocupar espaço.";
-  }
+  reasons.content = hasSocial
+    ? "Transforma seus canais atuais em uma presença coerente, recorrente e reconhecível."
+    : noPresence
+      ? "Cria os primeiros sinais de presença para sua marca começar a ocupar espaço."
+      : "Mantém a mensagem viva e dá aos anúncios uma presença confiável para onde conduzir o público.";
 
   if (goal === "conversations" || goal === "sales" || goal === "launch" || hasSocial) {
     services.add("meta");
@@ -157,13 +237,6 @@ function createRecommendation(
   if (goal === "launch" || pace === "accelerate") {
     services.add("cinematic");
     reasons.cinematic = "Cria material com maior percepção de valor para sustentar anúncios e lançamentos.";
-  }
-
-  if (!services.size) {
-    services.add("positioning");
-    services.add("content");
-    reasons.positioning = "Dá clareza para sua marca crescer sem comunicar ideias desconectadas.";
-    reasons.content = "Transforma essa clareza em uma presença que o mercado consegue reconhecer.";
   }
 
   let name = "Presença que Converte";
@@ -197,7 +270,10 @@ export default function JourneyHome() {
   const [leaving, setLeaving] = useState(false);
   const [customMode, setCustomMode] = useState(false);
   const [customServices, setCustomServices] = useState<ServiceKey[]>([]);
+  const [expandedService, setExpandedService] = useState<ServiceKey | null>(null);
+  const [displayTotal, setDisplayTotal] = useState(0);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const displayTotalRef = useRef(0);
 
   useEffect(() => {
     const introTimer = window.setTimeout(() => setIntroVisible(false), 3100);
@@ -270,20 +346,60 @@ export default function JourneyHome() {
     setPace(null);
     setCustomMode(false);
     setCustomServices([]);
+    setExpandedService(null);
     scheduleStep(0);
   };
 
   const toggleCustomService = (service: ServiceKey) => {
+    if (fixedServices.includes(service)) return;
     setCustomServices((current) => current.includes(service)
       ? current.filter((item) => item !== service)
       : [...current, service]);
   };
 
-  const visibleServices = customMode ? customServices : recommendation.services;
+  const visibleServices = customMode
+    ? Array.from(new Set<ServiceKey>([...fixedServices, ...customServices]))
+    : recommendation.services;
+  const recurringTotal = visibleServices.reduce((total, service) => (
+    serviceCatalog[service].billing === "monthly" ? total + serviceCatalog[service].price : total
+  ), 0);
+  const oneTimeTotal = visibleServices.reduce((total, service) => (
+    serviceCatalog[service].billing === "once" ? total + serviceCatalog[service].price : total
+  ), 0);
+  const firstMonthTotal = recurringTotal + oneTimeTotal;
+  const planServices = customMode
+    ? Object.keys(serviceCatalog) as ServiceKey[]
+    : recommendation.services;
+  const optionalServiceCount = visibleServices.filter((service) => !serviceCatalog[service].fixed).length;
   const selectedChannelLabels = channels.map((channel) => channelLabels[channel]).join(", ");
   const selectedServiceLabels = visibleServices.map((service) => serviceCatalog[service].title).join(", ");
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      displayTotalRef.current = firstMonthTotal;
+      setDisplayTotal(firstMonthTotal);
+      return;
+    }
+
+    const initialValue = displayTotalRef.current;
+    const difference = firstMonthTotal - initialValue;
+    let startedAt: number | null = null;
+    let animationFrame = 0;
+    const animateTotal = (timestamp: number) => {
+      if (startedAt === null) startedAt = timestamp;
+      const progressValue = Math.min((timestamp - startedAt) / 720, 1);
+      const easedProgress = 1 - Math.pow(1 - progressValue, 3);
+      const nextValue = Math.round(initialValue + difference * easedProgress);
+      displayTotalRef.current = nextValue;
+      setDisplayTotal(nextValue);
+      if (progressValue < 1) animationFrame = requestAnimationFrame(animateTotal);
+    };
+    animationFrame = requestAnimationFrame(animateTotal);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [firstMonthTotal]);
+
   const whatsappMessage = `https://wa.me/5511954829186?text=${encodeURIComponent(
-    `Olá, Up Clips! Montei meu plano pelo site. Cenário: ${agency ? agencyLabels[agency] : "a definir"}. Canais atuais: ${selectedChannelLabels || "nenhum"}. Objetivo: ${goal ? goalLabels[goal] : "a definir"}. Plano: ${selectedServiceLabels || "quero começar do zero"}. Quero conversar sobre os próximos passos.`,
+    `Olá, Up Clips! Montei o plano ${recommendation.name} pelo site. Cenário: ${agency ? agencyLabels[agency] : "a definir"}. Canais atuais: ${selectedChannelLabels || "nenhum"}. Objetivo: ${goal ? goalLabels[goal] : "a definir"}. Serviços: ${selectedServiceLabels}. Investimento estimado no primeiro mês: ${money.format(firstMonthTotal)}; recorrência a partir do segundo mês: ${money.format(recurringTotal)}/mês. Quero validar o escopo e os próximos passos.`,
   )}`;
 
   const progress = Math.min(step, 4) * 25;
@@ -319,7 +435,7 @@ export default function JourneyHome() {
         <small>{step < 4 ? `Etapa ${step + 1} de 4` : "Seu plano"}</small>
       </div>
 
-      <section className="journey-stage">
+      <section className={`journey-stage ${step === 4 ? "is-result" : ""}`}>
         <div className={`journey-step ${leaving ? "is-leaving" : ""}`} key={step}>
           {step < 4 ? (
             <div className="journey-step-top">
@@ -428,9 +544,9 @@ export default function JourneyHome() {
             <div className="journey-result">
               <div className="result-heading">
                 <button className="journey-back" type="button" onClick={goBack}><ArrowLeft size={17} /> {customMode ? "Voltar à recomendação" : "Revisar respostas"}</button>
-                <p><Sparkles size={15} /> {customMode ? "Monte sua própria estrutura" : recommendation.eyebrow}</p>
-                <h1>{customMode ? "Seu plano, do seu jeito." : recommendation.name}</h1>
-                <span>{customMode ? "Ative somente as frentes que você quer levar para a conversa." : recommendation.summary}</span>
+                <p><Sparkles size={15} /> {customMode ? "Personalize os complementos" : recommendation.eyebrow}</p>
+                <h1>{customMode ? "A base está pronta. Escolha como acelerar." : recommendation.name}</h1>
+                <span>{customMode ? "Posicionamento e conteúdo formam o núcleo fixo. Você decide quais frentes entram para aquisição e conversão." : recommendation.summary}</span>
                 <div className="answer-chips">
                   <b>{agency ? agencyLabels[agency] : "Cenário inicial"}</b>
                   <b>{goal ? goalLabels[goal] : "Objetivo definido"}</b>
@@ -438,49 +554,134 @@ export default function JourneyHome() {
                 </div>
               </div>
 
-              <div className={`plan-service-grid ${customMode ? "is-custom" : ""}`}>
-                {(customMode ? Object.keys(serviceCatalog) as ServiceKey[] : recommendation.services).map((serviceKey, index) => {
-                  const service = serviceCatalog[serviceKey];
-                  const Icon = service.icon;
-                  const selected = customServices.includes(serviceKey);
-                  return customMode ? (
-                    <button className={selected ? "is-selected" : ""} type="button" aria-pressed={selected} key={serviceKey} onClick={() => toggleCustomService(serviceKey)}>
-                      <span className="plan-service-index">{String(index + 1).padStart(2, "0")}</span>
-                      <i><Icon size={22} /></i>
-                      <strong>{service.title}</strong>
-                      <p>{service.short}</p>
-                      <b>{selected ? <Check size={16} /> : null}</b>
-                    </button>
-                  ) : (
-                    <article key={serviceKey}>
-                      <span className="plan-service-index">{String(index + 1).padStart(2, "0")}</span>
-                      <i><Icon size={22} /></i>
-                      <strong>{service.title}</strong>
-                      <p>{recommendation.reasons[serviceKey] ?? service.short}</p>
-                    </article>
-                  );
-                })}
-              </div>
-
-              <aside className="result-actions">
-                <div className="result-path">
-                  <span>Seu caminho</span>
+              <section className="plan-investment-hero" aria-label="Investimento estimado">
+                <div className="plan-investment-lead">
+                  <span><CircleDollarSign size={16} /> Investimento estimado</span>
+                  <strong>{money.format(displayTotal)}</strong>
+                  <small>no primeiro mês</small>
+                  <p>Um plano fechado para o seu momento, com base fixa e somente os complementos que fazem sentido agora.</p>
+                </div>
+                <div className="plan-investment-metrics">
                   <div>
-                    <i className="is-active"><Compass size={15} /><small>Clareza</small></i>
-                    <b />
-                    <i className={visibleServices.some((service) => ["content", "cinematic"].includes(service)) ? "is-active" : ""}><Film size={15} /><small>Presença</small></i>
-                    <b />
-                    <i className={visibleServices.some((service) => ["meta", "google"].includes(service)) ? "is-active" : ""}><TrendingUp size={15} /><small>Aquisição</small></i>
-                    <b />
-                    <i className={visibleServices.length ? "is-active" : ""}><MessageCircle size={15} /><small>Conversa</small></i>
+                    <span>A partir do 2º mês</span>
+                    <strong>{money.format(recurringTotal)}<small>/mês</small></strong>
+                  </div>
+                  <div>
+                    <span>Entradas pontuais</span>
+                    <strong>{oneTimeTotal ? money.format(oneTimeTotal) : "Nenhuma"}</strong>
+                  </div>
+                  <div>
+                    <span>Estrutura do plano</span>
+                    <strong>2 fixos + {optionalServiceCount} {optionalServiceCount === 1 ? "complemento" : "complementos"}</strong>
                   </div>
                 </div>
-                <a className={`result-whatsapp ${!visibleServices.length ? "is-disabled" : ""}`} href={visibleServices.length ? whatsappMessage : undefined} target="_blank" rel="noreferrer" aria-disabled={!visibleServices.length}>
+              </section>
+
+              <section className="plan-flow">
+                <div className="plan-flow-heading">
+                  <span>A ordem tem um motivo</span>
+                  <h2>Da clareza até a conversa.</h2>
+                  <p>Abra cada etapa para entender por que ela entrou no seu plano neste momento.</p>
+                </div>
+
+                <div className="plan-sequence" aria-label="Caminho estratégico do plano">
+                  <i className="is-active"><Compass size={16} /><span><b>Clareza</b><small>o que dizer</small></span></i>
+                  <em />
+                  <i className="is-active"><Film size={16} /><span><b>Presença</b><small>como aparecer</small></span></i>
+                  <em />
+                  <i className={visibleServices.some((service) => ["meta", "google", "cinematic"].includes(service)) ? "is-active" : ""}><TrendingUp size={16} /><span><b>Aquisição</b><small>quem alcançar</small></span></i>
+                  <em />
+                  <i className={visibleServices.includes("conversion") || visibleServices.some((service) => ["meta", "google"].includes(service)) ? "is-active" : ""}><MessageCircle size={16} /><span><b>Conversa</b><small>onde converter</small></span></i>
+                </div>
+
+                <div className={`plan-service-stack ${customMode ? "is-custom" : ""}`}>
+                  {planServices.map((serviceKey, index) => {
+                    const service = serviceCatalog[serviceKey];
+                    const Icon = service.icon;
+                    const selected = visibleServices.includes(serviceKey);
+                    const expanded = expandedService === serviceKey;
+                    const momentReason = recommendation.reasons[serviceKey]
+                      ?? (selected && customMode && !service.fixed
+                        ? "Você adicionou esta frente para ampliar o plano além da recomendação inicial."
+                        : !selected
+                          ? "Esta frente não apareceu como prioridade pelas suas respostas, mas pode ser adicionada se já existir uma necessidade específica."
+                          : service.short);
+                    return (
+                      <article className={`plan-service-card ${selected ? "is-selected" : "is-muted"} ${service.fixed ? "is-fixed" : ""}`} key={serviceKey}>
+                        <div className="plan-service-rail" aria-hidden="true">
+                          <span>{String(index + 1).padStart(2, "0")}</span>
+                          <i />
+                        </div>
+                        <div className="plan-service-main">
+                          <div className="plan-service-top">
+                            <i className="plan-service-icon"><Icon size={22} /></i>
+                            <div>
+                              <div className="plan-service-badges">
+                                <span>{service.fixed ? <><Lock size={11} /> Base fixa</> : selected ? "Recomendado agora" : "Complemento opcional"}</span>
+                              </div>
+                              <h3>{service.title}</h3>
+                            </div>
+                            <div className="plan-service-price">
+                              <strong>{money.format(service.price)}</strong>
+                              <small>{service.priceLabel}</small>
+                            </div>
+                          </div>
+
+                          <p className="plan-service-summary">{momentReason}</p>
+
+                          <div className="plan-service-controls">
+                            {customMode && !service.fixed ? (
+                              <button className={`plan-service-toggle ${selected ? "is-selected" : ""}`} type="button" aria-pressed={selected} onClick={() => toggleCustomService(serviceKey)}>
+                                {selected ? <><Check size={14} /> Incluído no plano</> : "Adicionar ao plano"}
+                              </button>
+                            ) : service.fixed ? (
+                              <span className="plan-fixed-note"><Lock size={12} /> Essencial em todos os planos</span>
+                            ) : null}
+                            <button className="plan-service-more" type="button" aria-expanded={expanded} onClick={() => setExpandedService(expanded ? null : serviceKey)}>
+                              Por que preciso disso agora? <ChevronDown size={15} />
+                            </button>
+                          </div>
+
+                          {expanded ? (
+                            <div className="plan-service-details">
+                              <div>
+                                <span>Por que entrou no seu plano</span>
+                                <p>{momentReason}</p>
+                              </div>
+                              <div>
+                                <span>Como este serviço agrega</span>
+                                <p>{service.details}</p>
+                              </div>
+                              <ul>
+                                {service.benefits.map((benefit) => <li key={benefit}><Check size={13} /> {benefit}</li>)}
+                              </ul>
+                            </div>
+                          ) : null}
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+
+              <aside className="result-actions">
+                <div className="result-summary-head">
+                  <span>Resumo do investimento</span>
+                  <strong>{money.format(firstMonthTotal)}</strong>
+                  <small>primeiro mês</small>
+                </div>
+                <div className="result-price-breakdown">
+                  <div><span>Recorrência mensal</span><b>{money.format(recurringTotal)}</b></div>
+                  <div><span>Implantações e captações</span><b>{money.format(oneTimeTotal)}</b></div>
+                  <div><span>Serviços incluídos</span><b>{visibleServices.length}</b></div>
+                </div>
+                <p className="result-investment-note">Valores estimados para o escopo apresentado. A verba investida diretamente no Meta ou Google não está inclusa.</p>
+                <a className="result-whatsapp" href={whatsappMessage} target="_blank" rel="noreferrer">
                   Levar meu plano para o WhatsApp <ArrowUpRight size={18} />
                 </a>
                 {!customMode ? (
                   <button className="result-customize" type="button" onClick={() => setCustomMode(true)}>
-                    <SlidersHorizontal size={17} /> Prefiro personalizar do zero
+                    <SlidersHorizontal size={17} /> Personalizar complementos
                   </button>
                 ) : (
                   <button className="result-customize" type="button" onClick={() => setCustomServices(recommendation.services)}>
